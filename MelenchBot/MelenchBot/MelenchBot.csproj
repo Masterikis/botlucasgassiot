@@ -87,7 +87,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ErrorManager.cs" />
     <Compile Include="Classes\User.cs" />
+    <Compile Include="Classes\Vote.cs" />
     <Compile Include="Core\CommandsMelenchBot.cs" />
     <Compile Include="Classes\ConnectionDatas.cs" />
     <Compile Include="MelenchBotOld.cs" />
