@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
+
 
 namespace MelenchBot
 {
@@ -16,14 +18,14 @@ namespace MelenchBot
         public string password { get; }
         public int maxRetries { get; }
 
-        public ConnectionDatas(string theServerAddress, int thePort, string theUserName, string theNickName, string theChannel, string thePassword, int theMaxRetries = 3)
+        public ConnectionDatas(int theMaxRetries = 3)
         {
-            serverAddress = theServerAddress;
-            port = thePort;
-            userName = theUserName;
-            nickName = theNickName;
-            channel = theChannel;
-            password = thePassword;
+            serverAddress = ConfigurationManager.AppSettings["serverAddress"];
+            port = int.Parse(ConfigurationManager.AppSettings["serverPort"]);
+            userName = ConfigurationManager.AppSettings["userName"];
+            nickName = ConfigurationManager.AppSettings["nickName"];
+            channel = ConfigurationManager.AppSettings["channel"];
+            password = ConfigurationManager.AppSettings["password"];
             maxRetries = theMaxRetries;
         }
     }

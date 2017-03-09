@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MelenchBot", "MelenchBot\MelenchBot.csproj", "{84CE295B-5368-4F4E-B700-C0FDEB265E62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MelenchBot.DataBase", "MelenchBot-DataBase\MelenchBot.DataBase.csproj", "{B1193AE3-8A0D-4F78-8212-F7D10EDE70EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melenchbot.Messages", "Melenchbot-Messages\Melenchbot.Messages.csproj", "{D5C62E46-7003-4E0A-9AB4-E2AB94FFF4E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{84CE295B-5368-4F4E-B700-C0FDEB265E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84CE295B-5368-4F4E-B700-C0FDEB265E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84CE295B-5368-4F4E-B700-C0FDEB265E62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1193AE3-8A0D-4F78-8212-F7D10EDE70EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1193AE3-8A0D-4F78-8212-F7D10EDE70EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1193AE3-8A0D-4F78-8212-F7D10EDE70EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1193AE3-8A0D-4F78-8212-F7D10EDE70EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5C62E46-7003-4E0A-9AB4-E2AB94FFF4E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C62E46-7003-4E0A-9AB4-E2AB94FFF4E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C62E46-7003-4E0A-9AB4-E2AB94FFF4E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C62E46-7003-4E0A-9AB4-E2AB94FFF4E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

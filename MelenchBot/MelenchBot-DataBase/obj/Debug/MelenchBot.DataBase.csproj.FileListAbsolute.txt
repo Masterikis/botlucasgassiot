@@ -1,0 +1,7 @@
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\bin\Debug\MelenchBot-DataBase.dll.config
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\bin\Debug\MelenchBot-DataBase.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\bin\Debug\MelenchBot-DataBase.pdb
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\bin\Debug\MySql.Data.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\obj\Debug\MelenchBot.DataBase.csprojResolveAssemblyReference.cache
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\obj\Debug\MelenchBot-DataBase.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot-DataBase\obj\Debug\MelenchBot-DataBase.pdb

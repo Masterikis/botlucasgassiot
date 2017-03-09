@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using TwitchLib;
 using TwitchLib.Models.Client;
 using TwitchLib.Events.Client;
-
+using MelenchBot.DataBase;
+using MelenchBot_DataBase.DataBase;
 
 namespace MelenchBot
 {
@@ -14,32 +15,16 @@ namespace MelenchBot
     {
         static void Main(string[] args)
         {
-            //MelenchBot mlbot = new MelenchBot("irc.twitch.tv", 6667,
-            //    "melenchbot", "oauth:c35iurnatd0w8m4f4c8v6mkdqvi0p1");
-            //mlbot.jointRoom("masterikis");
+            MelenchBot mlbot = new MelenchBot();
+            mlbot.onMessageReceveid += Mlbot_onMessageReceveid;
+            mlbot.connect();
+            Console.ReadKey();
+            mlbot.stop();
+        }
 
-            //while(true)
-            //{
-
-            //}
-
-            MelenchBot mlbot = new MelenchBot(
-                theServerAddress: "irc.chat.twitch.tv",
-                thePort: 6667,
-                theUserName: "MelenchBot",
-                theNickName: "Melench-Bot",
-                theChannel: "#masterikis",
-                thePassword: "oauth:c35iurnatd0w8m4f4c8v6mkdqvi0p1"
-            );
-
-            Console.WriteLine("Avant connexion.");
-            mlbot.connection();
-            mlbot.joinChannel();
-
-            while (true)
-            {
-                mlbot.inspectTheChat();
-            }
+        private static void Mlbot_onMessageReceveid(object sender, MessageReceived e)
+        {
+            Console.WriteLine(e.originalMessage);
         }
     }
 }

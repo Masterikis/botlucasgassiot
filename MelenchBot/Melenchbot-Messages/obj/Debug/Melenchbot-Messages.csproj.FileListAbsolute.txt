@@ -1,0 +1,6 @@
+D:\visual studio 2015\Projects\MelenchBot\Melenchbot-Messages\bin\Debug\Melenchbot-Messages.dll
+D:\visual studio 2015\Projects\MelenchBot\Melenchbot-Messages\bin\Debug\Melenchbot-Messages.pdb
+D:\visual studio 2015\Projects\MelenchBot\Melenchbot-Messages\obj\Debug\Melenchbot-Messages.csprojResolveAssemblyReference.cache
+D:\visual studio 2015\Projects\MelenchBot\Melenchbot-Messages\obj\Debug\Melenchbot-Messages.dll
+D:\visual studio 2015\Projects\MelenchBot\Melenchbot-Messages\obj\Debug\Melenchbot-Messages.pdb
+D:\visual studio 2015\Projects\MelenchBot\Melenchbot-Messages\bin\Debug\Melenchbot-Messages.dll.config

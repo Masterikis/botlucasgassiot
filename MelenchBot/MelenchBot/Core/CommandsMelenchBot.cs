@@ -1,4 +1,5 @@
 ﻿using MelenchBot.Classes;
+using MelenchBot_DataBase.DBClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,12 @@ namespace MelenchBot
         private MelenchBot melenchBot;
         private string[] getUserBans = { "!lsbanusers", "!lsbu" , "!allbanusers"};
         private Vote vote;
+        private CitationsMorsay citationsMorsay;
 
         public CommandsMelenchBot(MelenchBot theMelenchBot)
         {
             melenchBot = theMelenchBot;
+            citationsMorsay = new CitationsMorsay();
         }
 
         /// <summary>
@@ -34,6 +37,7 @@ namespace MelenchBot
             {
                 if (getUserBans.Any(s => command.ToLower().Contains(s))) lsUsersBans();
                 if (command.ToLower().Contains("!melenchbot") && !theMsgReceived.itsMyCreator) melenchBot.writeMessage(theMsgReceived.userName + " => Qu'est-ce que t'as toi ?");
+                if (command.ToLower().Contains("!morsay")) morsayCitation();
             }
             else
             {
@@ -49,8 +53,9 @@ namespace MelenchBot
         public void analyzeCommandCreator(string theCommand)
         {
             if (theCommand.Contains("!melenchbot")) melenchBot.writeMessage("Ils peuvent toujours nommer Donald à l'Europe; c’est quand même Picsou qui commande.");
-                if (theCommand.Contains("!unban")) unBanUser(theCommand.Substring(theCommand.IndexOf(" ") + 1));
-                if (theCommand.Contains("!ban")) banUser(theCommand.Substring(theCommand.IndexOf(" ") + 1));
+                if (theCommand.Contains("!unban ")) unBanUser(theCommand.Substring(theCommand.IndexOf(" ") + 1));
+                if (theCommand.Contains("!ban ")) banUser(theCommand.Substring(theCommand.IndexOf(" ") + 1));
+            if (theCommand.Contains("!reini ")) reiniWarningUser(theCommand.Substring(theCommand.IndexOf(" ") + 1));
             if (theCommand.Contains("!vote")) melenchBot.writeMessage(launchNewVote(theCommand));
 
         }
@@ -61,7 +66,7 @@ namespace MelenchBot
         /// <param name="theUserName"></param>
         private void unBanUser(string theUserName)
         {
-            melenchBot.lsUsers.getUser(theUserName).unbanUser();
+            melenchBot.mlbDBInterract.unbanUser(theUserName);
             melenchBot.unbanUser(theUserName);
             melenchBot.writeMessage(theUserName + " => C'est bon, reviens du goulag !");
         }
@@ -74,10 +79,16 @@ namespace MelenchBot
         {
             melenchBot.writeMessage(theUserName + " ==> Au goulag le capitaliste !");
             melenchBot.banUser(theUserName);
-            User user = melenchBot.lsUsers.getUser(theUserName);
-            user.reinitWarnings();
-            user.banUser();
+            melenchBot.mlbDBInterract.banUser(theUserName);
+            //User user = melenchBot.lsUsers.getUser(theUserName);
+            //user.reinitWarnings();
+            //user.banUser();
+        }
 
+        private void reiniWarningUser(string theUserName)
+        {
+            melenchBot.writeMessage(theUserName + " ==> Tes péchés sont pardonnés.");
+            melenchBot.mlbDBInterract.reiniWarningUser(melenchBot.mlbDBInterract.lsUsers.getUser(theUserName));
         }
 
         /// <summary>
@@ -86,12 +97,18 @@ namespace MelenchBot
         private void lsUsersBans()
         {
             string msg = "Liste des utilisateurs bannis :";
-            Console.WriteLine(melenchBot.lsUsers.getAllBanUsers().Count);
-            foreach(User u in melenchBot.lsUsers.getAllBanUsers())
+            Status ban = melenchBot.mlbDBInterract.lsStatus.getStatus(melenchBot.mlbDBInterract.lsStatus.ban);
+            foreach (KeyValuePair<string, User> u in melenchBot.mlbDBInterract.lsUsers.list)
             {
-                msg += " - " + u.userName;
+                if(u.Value.user_status == ban) msg += " - " + u.Value.user_name;
             }
             melenchBot.writeMessage(msg);
+            //Console.WriteLine(melenchBot.lsUsers.getAllBanUsers().Count);
+            //foreach(UserOld u in melenchBot.lsUsers.getAllBanUsers())
+            //{
+            //    msg += " - " + u.userName;
+            //}
+            //melenchBot.writeMessage(msg);
         }
 
         /// <summary>
@@ -133,37 +150,59 @@ namespace MelenchBot
 
             vote = new Vote(minutes, lsOptions);
 
-            string messageLaunchVote = "GOGOGO pour voter, temps du vote : " + minutes + " minute(s)";
+            string messageLaunchVote = "Référendum, temps : " + minutes + " minute(s), votez avec !vote *numero*";
             int index = 1;
             foreach (string option in lsOptions)
             {
                 messageLaunchVote += ", " + index + " pour " + option + " ";
                 index++;
             }
-            Thread t = new Thread(this.threadVote);
-            t.Start();
+            Task.Run(() => this.threadVote());
             return messageLaunchVote;
         }
 
+        /// <summary>
+        /// Permet d'ajouter un vote si un référendum est en cours.
+        /// </summary>
+        /// <param name="theUserName"></param>
+        /// <param name="theOption"></param>
         private void addUserVote(string theUserName, string theOption)
         {
             if (vote != null && !vote.timeOver) melenchBot.writeMessage(theUserName + " => " + vote.addVote(theUserName, theOption));
-            else melenchBot.writeMessage("Aucun vote en cours.");
+            else melenchBot.writeMessage("Aucun référendum en cours.");
         }
 
+        /// <summary>
+        /// Thread permettant d'annoncer lorsqu'un référendum est terminé, ainsi que de données les résultats.
+        /// </summary>
         private void threadVote()
         {
             while (!vote.timeOver)
             {
                 Thread.Sleep(1000);
             }
-            melenchBot.writeMessage("Vote terminé !!! Les résultats arrivent ...");
+            melenchBot.writeMessage("Référendum terminé !!! Les résultats arrivent ...");
             string messageResult = "Les résultats sont là";
             foreach(KeyValuePair<string, int> entry in vote.getResult())
             {
                 messageResult += ", " + entry.Key + " : " + entry.Value;
             }
             melenchBot.writeMessage(messageResult);
+        }
+
+        private void morsayCitation()
+        {
+            if (!citationsMorsay.timeOver)
+            {
+                melenchBot.writeMessage("On se calme, c'est une citation toutes les 5 minutes max.");
+            }
+            else
+            {
+                Random rand = new Random();
+                int morsayCitation = rand.Next(0, CitationsMorsay.citationsMorsay.Length);
+                citationsMorsay.launchTimer();
+                melenchBot.writeMessage("Comme le disait le grand philosophe Morsay : " + CitationsMorsay.citationsMorsay[morsayCitation]);
+            }
         }
     }
 }

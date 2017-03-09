@@ -32,10 +32,10 @@ namespace MelenchBot.Classes
                 option = int.Parse(theOption.Substring(theOption.ToLower().IndexOf(" ") + 1));
             } catch(Exception e)
             {
-                return "Vote non prit en compte";
+                return "On prend que les numéros";
             }
 
-            if (options.Count < option || option == -1) return "Vote non prit en compte";
+            if (options.Count < option || option == -1) return "Faut voter avec les numéros proposés ...";
             votersList[theUserName] = options[option - 1];
             return "Vote prit en compte";
         }

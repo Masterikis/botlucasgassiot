@@ -12,30 +12,31 @@ namespace MelenchBot
     /// </summary>
     public class MessageReceived
     {
-
-        public string userName { get; set; }
-        public string userMessage { get; set; }
-        public bool itsMelenchBot { get; set; }
-        public bool itsMyCreator { get; set; }
-        public bool itsUserMessage { get; set; }
-        public bool itsALink { get; set; }
-        public bool itsACommand { get; set; }
-        public bool containtsInsult { get; set; }
+        public string originalMessage { get; private set; }
+        public string userName { get; private set; }
+        public string userMessage { get; private set; }
+        public bool itsMelenchBot { get; private set; }
+        public bool itsMyCreator { get; private set; }
+        public bool itsUserMessage { get; private set; }
+        public bool itsALink { get { return this.itsALinkFunc(); } }
+        public bool itsACommand { get { return this.itsACommandFunc(); }  }
+        public bool containtsInsult { get { return this.containtsInsultFunc(); } }
         private string[] linkList = { "http:", "https:", "www.", ".org", ".com", ".fr", ".net" };
-        private string[] insultsList = { "putain", "pt1", "ptin", "encul", "sale chienne", "merde", "salaud", "salope", "baise ", "pd", "pédé", "va chier", "pute", "nique", "tg", "ta gueule"};
+        private string[] insultsList = { "putain", "pt1", "ptin", "encul", "sale chienne", "merde", "salaud", "salope", "baise ", "pd", "pédé", "va chier", "pute", "nique", "tg", "ta gueule", "salaud", "bitch", "biatch"};
 
-        public MessageReceived(string theMessage)
+        private MessageReceived()
         {
-            itsALink = false;
-            itsUserMessage = false;
-            itsMelenchBot = false;
-            itsMyCreator = false;
-            parserMessage(theMessage);
-            if (itsUserMessage)
-            {
-                itsALink = itsALinkFunc();
-                containtsInsult = containtsInsultFunc();
-            }
+        }
+
+        public static MessageReceived parseMessage(string theMessage)
+        {
+            MessageReceived item = new MessageReceived();
+            item.originalMessage = theMessage;
+            item.itsUserMessage = false;
+            item.itsMelenchBot = false;
+            item.itsMyCreator = false;
+            item.parserMessage(theMessage);
+            return item;
         }
 
         /// <summary>
@@ -55,7 +56,6 @@ namespace MelenchBot
                 itsUserMessage = true;
                 if (userName == "melanchbot") itsMelenchBot = true;
                 if (userName == "masterikis") itsMyCreator = true;
-                itsACommand = itsACommandFunc();
             }
         }
 
@@ -65,7 +65,7 @@ namespace MelenchBot
         /// <returns></returns>
         private bool itsALinkFunc()
         {
-            if(linkList.Any(s => userMessage.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) != -1))
+            if(itsUserMessage && linkList.Any(s => userMessage.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) != -1))
             {
                 return true;
             }
@@ -78,7 +78,7 @@ namespace MelenchBot
         /// <returns></returns>
         private bool containtsInsultFunc()
         {
-            if (insultsList.Any(s => userMessage.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) != -1))
+            if (itsUserMessage && insultsList.Any(s => userMessage.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) != -1))
             {
                 return true;
             }
@@ -91,7 +91,7 @@ namespace MelenchBot
         /// <returns></returns>
         public bool itsACommandFunc()
         {
-            if(userMessage.IndexOf("!") == 0)
+            if(itsUserMessage && userMessage.IndexOf("!") == 0)
             { 
                 return true;
             }

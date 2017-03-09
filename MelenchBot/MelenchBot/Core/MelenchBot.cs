@@ -1,5 +1,6 @@
 ﻿using MelenchBot.Classes;
 using MelenchBot.Messages;
+using MelenchBot_DataBase.DBClasses;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,22 +16,55 @@ namespace MelenchBot
     {
 
         private ConnectionDatas connectionDatas;
+        public MelenchBotDBInterractions mlbDBInterract { get; private set; }
 
         private TcpClient client;
         private static StreamReader reader;
-        public Users lsUsers { get; set; }
         private MessageSender messageSender;
         private CommandsMelenchBot cmdsMelenchBot;
+        public event EventHandler<MessageReceived> onMessageReceveid;
 
-        public MelenchBot(string theServerAddress, int thePort, string theUserName, string theNickName, string theChannel, string thePassword, int theMaxRetries = 3)
+        private CancellationTokenSource source = new CancellationTokenSource();
+
+        public MelenchBot(int theMaxRetries = 3)
         {
-            connectionDatas = new ConnectionDatas(theServerAddress, thePort, theUserName, theNickName, theChannel, thePassword);
+            connectionDatas = new ConnectionDatas();
 
             client = new TcpClient(connectionDatas.serverAddress, connectionDatas.port);
             reader = new StreamReader(client.GetStream());
-            lsUsers = new Users();
-            messageSender = new MessageSender(new StreamWriter(client.GetStream()));
+
+
+            messageSender = new MessageSender(new StreamWriter(client.GetStream()), source.Token);
             cmdsMelenchBot = new CommandsMelenchBot(this);
+            mlbDBInterract = new MelenchBotDBInterractions(this);
+        }
+
+        /// <summary>
+        /// Permet de lancer la connexion du bot au tchat twitch.
+        /// </summary>
+        public void connect()
+        {
+            connection();
+            joinChannel();
+
+            Task.Run(() => this.listen());
+        }
+
+        public void stop()
+        {
+            source.Cancel();
+        }
+
+        /// <summary>
+        /// Thread permettant d'écouter les messages.
+        /// </summary>
+        private void listen()
+        {
+            while (true)
+            {
+                inspectTheChat();
+                Thread.Sleep(50);
+            }
         }
 
         /// <summary>
@@ -85,7 +119,8 @@ namespace MelenchBot
             MessageReceived msgReceived;
             while((message = reader.ReadLine()) != null)
             {
-                msgReceived = new MessageReceived(message);
+                msgReceived = MessageReceived.parseMessage(message); //Développeur .net (base)
+                onMessageReceveid?.Invoke(this, msgReceived); // if (onMessageReceveid != null) onMessageReceveid(this, msgReceived);
                 if (msgReceived.itsUserMessage && !msgReceived.itsMelenchBot && !msgReceived.itsMyCreator)
                 {
                     if (msgReceived.itsALink) userSendLink(msgReceived.userName);
@@ -99,6 +134,38 @@ namespace MelenchBot
             }
         }
 
+        ///// <summary>
+        ///// Permet de gérer lorsqu'un utilisateur envoie un lien sur le tchat.
+        ///// Envoie jusqu'à 3 avertissements, au quatrième lien, la personne est banni.
+        ///// </summary>
+        ///// <param name="theUserName"></param>
+        //public void userSendLink(string theUserName)
+        //{
+        //    User user = lsUsers.getUser(theUserName);
+        //    int warningCount = user.addLinkWarning();
+        //    Console.WriteLine(warningCount);
+        //    switch (warningCount)
+        //    {
+        //        case 1 :
+        //            writeMessage(theUserName + " : Pas de lien, premier avertissement !");
+        //            break;
+        //        case 2:
+        //            writeMessage(theUserName + " : Pas de lien, deuxième avertissement !");
+        //            break;
+        //        case 3:
+        //            writeMessage(theUserName + " : Pas de lien, troisième et dernier avertissement !");
+        //            break;
+        //        default:
+        //            writeMessage(theUserName + " ==> Au goulag le capitaliste !");
+        //            banUser(theUserName);
+        //            user.reinitWarnings();
+        //            user.banUser();
+        //            break;
+
+        //    }
+        //}
+
+
         /// <summary>
         /// Permet de gérer lorsqu'un utilisateur envoie un lien sur le tchat.
         /// Envoie jusqu'à 3 avertissements, au quatrième lien, la personne est banni.
@@ -106,12 +173,18 @@ namespace MelenchBot
         /// <param name="theUserName"></param>
         public void userSendLink(string theUserName)
         {
-            User user = lsUsers.getUser(theUserName);
-            int warningCount = user.addLinkWarning();
-            Console.WriteLine(warningCount);
+            User user = mlbDBInterract.lsUsers.getUser(theUserName);
+            if(user == null)
+            {
+                user = mlbDBInterract.addNewUser(theUserName);
+            }
+            int warningCount = mlbDBInterract.getUserWarning(theUserName, mlbDBInterract.lsWarnings.getWarning("Link").warning_id);
+            warningCount++;
+            mlbDBInterract.addWarning(user, warningCount, mlbDBInterract.lsWarnings.getWarning("Link").warning_id);
+            
             switch (warningCount)
             {
-                case 1 :
+                case 1:
                     writeMessage(theUserName + " : Pas de lien, premier avertissement !");
                     break;
                 case 2:
@@ -123,8 +196,7 @@ namespace MelenchBot
                 default:
                     writeMessage(theUserName + " ==> Au goulag le capitaliste !");
                     banUser(theUserName);
-                    user.reinitWarnings();
-                    user.banUser();
+                    mlbDBInterract.banUser(theUserName);
                     break;
 
             }
@@ -137,8 +209,14 @@ namespace MelenchBot
         /// <param name="theUserName"></param>
         public void containtsSomeInsults(string theUserName)
         {
-            User user = lsUsers.getUser(theUserName);
-            int warningCount = user.addInsultWarning();
+            User user = mlbDBInterract.lsUsers.getUser(theUserName);
+            if (user == null)
+            {
+                user = mlbDBInterract.addNewUser(theUserName);
+            }
+            int warningCount = mlbDBInterract.getUserWarning(theUserName, mlbDBInterract.lsWarnings.getWarning("Insult").warning_id);
+            warningCount++;
+            mlbDBInterract.addWarning(user, warningCount, mlbDBInterract.lsWarnings.getWarning("Insult").warning_id);
             switch (warningCount)
             {
                 case 1:
@@ -153,10 +231,38 @@ namespace MelenchBot
                 default:
                     writeMessage(theUserName + " ==> Au goulag le capitaliste !");
                     banUser(theUserName);
-                    user.reinitWarnings();
-                    user.banUser();
+                    mlbDBInterract.banUser(theUserName);
                     break;
             }
         }
+
+        ///// <summary>
+        ///// Permet de gérer lorsqu'un utilisateur envoie des insultes (ou grossierté).
+        ///// Envoie jusqu'à 3 avertissements, au quatrième lien, la personne est banni.
+        ///// </summary>
+        ///// <param name="theUserName"></param>
+        //public void containtsSomeInsults(string theUserName)
+        //{
+        //    Classes.User user = lsUsers.getUser(theUserName);
+        //    int warningCount = user.addInsultWarning();
+        //    switch (warningCount)
+        //    {
+        //        case 1:
+        //            writeMessage(theUserName + " : Pas de grossierté, premier avertissement !");
+        //            break;
+        //        case 2:
+        //            writeMessage(theUserName + " : Pas de grossierté, deuxième avertissement !");
+        //            break;
+        //        case 3:
+        //            writeMessage(theUserName + " : Pas de grossierté, troisième et dernier avertissement !");
+        //            break;
+        //        default:
+        //            writeMessage(theUserName + " ==> Au goulag le capitaliste !");
+        //            banUser(theUserName);
+        //            user.reinitWarnings();
+        //            user.banUser();
+        //            break;
+        //    }
+        //}
     }
 }

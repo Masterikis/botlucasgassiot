@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace MelenchBot.Classes
 {
-    public class User
+    public class UserOld
     {
         public string userName { get; }
         public int linkWarning { get; set; }
         public int insultWarning { get; set; }
         public bool isBan { get; set; }
 
-        public User(string theUserName)
+        public UserOld(string theUserName)
         {
             userName = theUserName;
             linkWarning = 0;
             insultWarning = 0;
             isBan = false;
         }
-
+        
         public int addLinkWarning()
         {
             return ++linkWarning;
@@ -51,18 +51,18 @@ namespace MelenchBot.Classes
 
     public class Users
     {
-        public Dictionary<string, User> lsUser { get; set; }
+        public Dictionary<string, UserOld> lsUser { get; set; }
 
         public Users()
         {
-            lsUser = new Dictionary<string, User>();
+            lsUser = new Dictionary<string, UserOld>();
         }
 
-        public User getUser(string theUserName)
+        public UserOld getUser(string theUserName)
         {
             if (!lsUser.ContainsKey(theUserName))
             {
-                lsUser.Add(theUserName, new User(theUserName));
+                lsUser.Add(theUserName, new UserOld(theUserName));
             }
             return lsUser[theUserName];
         }
@@ -71,11 +71,11 @@ namespace MelenchBot.Classes
         /// Permet d'obtenir une liste de tous les utilisateurs qui sont bannis.
         /// </summary>
         /// <returns></returns>
-        public List<User> getAllBanUsers()
+        public List<UserOld> getAllBanUsers()
         {
-            List<User> lsBanUser = new List<User>();
+            List<UserOld> lsBanUser = new List<UserOld>();
 
-            foreach(KeyValuePair<string, User> u in lsUser)
+            foreach(KeyValuePair<string, UserOld> u in lsUser)
             {
                 if (u.Value.isBan)
                 {

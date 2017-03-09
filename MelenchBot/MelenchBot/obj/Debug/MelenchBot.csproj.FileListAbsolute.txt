@@ -29,3 +29,11 @@ D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\Mono.Math.xml
 D:\visual studio 2015\Projects\MelenchBot\MelenchBot\obj\Debug\MelenchBot.csprojResolveAssemblyReference.cache
 D:\visual studio 2015\Projects\MelenchBot\MelenchBot\obj\Debug\MelenchBot.exe
 D:\visual studio 2015\Projects\MelenchBot\MelenchBot\obj\Debug\MelenchBot.pdb
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\Google.Protobuf.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\MySql.Data.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\Google.Protobuf.xml
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\MelenchBot-DataBase.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\Melenchbot-Messages.dll
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\MelenchBot-DataBase.pdb
+D:\visual studio 2015\Projects\MelenchBot\MelenchBot\bin\Debug\Melenchbot-Messages.pdb

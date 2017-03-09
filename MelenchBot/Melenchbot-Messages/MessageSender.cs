@@ -19,10 +19,12 @@ namespace MelenchBot.Messages
 
         private ConcurrentQueue<String> _queue = new ConcurrentQueue<string>();
         private static StreamWriter writer;
+        private CancellationToken token;
 
-        public MessageSender(StreamWriter theWriter)
+        public MessageSender(StreamWriter theWriter, CancellationToken theToken)
         {
             writer = theWriter;
+            token = theToken;
 
             Thread t = new Thread(this.threadSender);
             t.Start();
@@ -109,7 +111,7 @@ namespace MelenchBot.Messages
         /// </summary>
         private void threadSender()
         {
-            while (true)
+            while (!this.token.IsCancellationRequested)
             {
                 string message = null;
 
@@ -121,7 +123,25 @@ namespace MelenchBot.Messages
 
                 Thread.Sleep(1500);
             }
+            Console.WriteLine("Fin du Thread d'envoie");
         }
 
+
+        private void threadSenderV2()
+        {
+            while (!this.token.IsCancellationRequested)
+            {
+                string message = null;
+
+                if (this._queue.TryDequeue(out message))
+                {
+                    writer.WriteLine(message);
+                    writer.Flush();
+                }
+
+                Thread.Sleep(1500);
+            }
+            Console.WriteLine("Fin du Thread d'envoie");
+        }
     }
 }
