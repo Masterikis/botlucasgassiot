@@ -22,6 +22,11 @@ namespace MelenchBot
             mlbot.stop();
         }
 
+        /// <summary>
+        /// Permet d'écrire les messages reçus dans la console.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void Mlbot_onMessageReceveid(object sender, MessageReceived e)
         {
             Console.WriteLine(e.originalMessage);

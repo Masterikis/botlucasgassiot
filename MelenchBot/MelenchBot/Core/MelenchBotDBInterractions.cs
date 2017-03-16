@@ -20,6 +20,7 @@ namespace MelenchBot
         private DBStatusCommunication dbStatusCommunication;
         private DBUserCommunication dbUserCommunication;
 
+
         public MelenchBotDBInterractions(MelenchBot theMelenchBot)
         {
             melenchBot = theMelenchBot;

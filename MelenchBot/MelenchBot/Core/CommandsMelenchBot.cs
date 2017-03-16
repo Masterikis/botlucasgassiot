@@ -126,8 +126,16 @@ namespace MelenchBot
             int positionFirstComma = theCommande.IndexOf(",");
             if (positionFirstComma == -1) return ErrorManager.voteError[0];
 
-
-            int minutes = int.Parse(theCommande.Substring(beforeMinute + 1, positionFirstComma - beforeMinute - 1));
+            int minutes = 0;
+            //Permet de vérifier s'il s'agit bien de temps. Evite le FormatException.
+            try
+            {
+                minutes = int.Parse(theCommande.Substring(beforeMinute + 1, positionFirstComma - beforeMinute - 1));
+            } catch(FormatException e)
+            {
+                Console.WriteLine("Erreur de type : " + e.Message);
+                return ErrorManager.voteError[2];
+            }
             List<string> lsOptions = new List<string>();
 
             int positionSecondComma = theCommande.IndexOf(",", positionFirstComma + 1);

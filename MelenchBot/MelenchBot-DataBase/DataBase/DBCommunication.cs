@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace MelenchBot.DataBase
 {
+    /// <summary>
+    /// Classe abstraite pour tout communication avec la base de données.
+    /// Chaque communication avec une table aura sa propre classe héritante de celle-ci.
+    /// </summary>
     public abstract class DBCommunication
     {
 
@@ -17,6 +21,11 @@ namespace MelenchBot.DataBase
             dbConnection = DBConnection.Instance();
         }
 
+        /// <summary>
+        /// Permet d'exécuter une requete.
+        /// </summary>
+        /// <param name="theQuery"></param>
+        /// <returns></returns>
         protected MySqlDataReader executeQuery(string theQuery)
         {
             if (dbConnection.IsConnect())

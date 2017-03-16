@@ -39,11 +39,20 @@ namespace MelenchBot.Messages
         /// <param name="theUserName"></param>
         public void connection(string thePassword, string theUserName)
         {
-            writer.Write("PASS " + thePassword + "\n");
-            writer.Flush();
-            writer.Write("NICK " + theUserName + "\n");
-            writer.Flush();
-            Console.WriteLine("Connexion effectué.");
+            try
+            {
+                writer.Write("PASS " + thePassword + "\n");
+                writer.Flush();
+                writer.Write("NICK " + theUserName + "\n");
+                writer.Flush();
+                Console.WriteLine("Connexion effectué.");
+            } catch (Exception e)
+            {
+                Console.WriteLine("Erreur lors de la connexion : " + e.Message);
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
+            
         }
 
         /// <summary>
@@ -53,10 +62,19 @@ namespace MelenchBot.Messages
         /// <param name="theNickName">Le nom d'utilisateur (ici MelenchBot)</param>
         public void joinChannel(string theChannel, string theNickName)
         {
-            writer.WriteLine("JOIN " + theChannel);
-            writer.Flush();
-            Console.WriteLine("Salon rejoint avec succès.");
-            writeMessage("Repectez les règles bande de capitalistes !", theNickName, theChannel);
+            try
+            {
+                writer.WriteLine("JOIN " + theChannel);
+                writer.Flush();
+                Console.WriteLine("Salon rejoint avec succès.");
+                writeMessage("Repectez les règles bande de capitalistes !", theNickName, theChannel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Impossible de rejoindre le salon : " + e.Message);
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
         }
 
         /// <summary>

@@ -50,6 +50,9 @@ namespace MelenchBot
             Task.Run(() => this.listen());
         }
 
+        /// <summary>
+        /// Permet de stoper le bot ainsi que les threads de manière propre.
+        /// </summary>
         public void stop()
         {
             source.Cancel();
@@ -120,50 +123,21 @@ namespace MelenchBot
             while((message = reader.ReadLine()) != null)
             {
                 msgReceived = MessageReceived.parseMessage(message); //Développeur .net (base)
-                onMessageReceveid?.Invoke(this, msgReceived); // if (onMessageReceveid != null) onMessageReceveid(this, msgReceived);
-                if (msgReceived.itsUserMessage && !msgReceived.itsMelenchBot && !msgReceived.itsMyCreator)
-                {
-                    if (msgReceived.itsALink) userSendLink(msgReceived.userName);
-                    if (msgReceived.containtsInsult) containtsSomeInsults(msgReceived.userName);
-                    if (msgReceived.itsACommand) cmdsMelenchBot.analyzeCommand(msgReceived);
-                }
-                else if (msgReceived.itsACommand && msgReceived.itsMyCreator) {
-                    if (msgReceived.itsACommand) cmdsMelenchBot.analyzeCommand(msgReceived);
-                    //cmdsMelenchBot.analyzeCommandCreator(msgReceived.userMessage);
+                if(msgReceived != null) { 
+                    onMessageReceveid?.Invoke(this, msgReceived); // if (onMessageReceveid != null) onMessageReceveid(this, msgReceived);
+                    if (msgReceived.itsUserMessage && !msgReceived.itsMelenchBot && !msgReceived.itsMyCreator)
+                    {
+                        if (msgReceived.itsALink) userSendLink(msgReceived.userName);
+                        if (msgReceived.containtsInsult) containtsSomeInsults(msgReceived.userName);
+                        if (msgReceived.itsACommand) cmdsMelenchBot.analyzeCommand(msgReceived);
+                    }
+                    else if (msgReceived.itsACommand && msgReceived.itsMyCreator) {
+                        if (msgReceived.itsACommand) cmdsMelenchBot.analyzeCommand(msgReceived);
+                        //cmdsMelenchBot.analyzeCommandCreator(msgReceived.userMessage);
+                    }
                 }
             }
         }
-
-        ///// <summary>
-        ///// Permet de gérer lorsqu'un utilisateur envoie un lien sur le tchat.
-        ///// Envoie jusqu'à 3 avertissements, au quatrième lien, la personne est banni.
-        ///// </summary>
-        ///// <param name="theUserName"></param>
-        //public void userSendLink(string theUserName)
-        //{
-        //    User user = lsUsers.getUser(theUserName);
-        //    int warningCount = user.addLinkWarning();
-        //    Console.WriteLine(warningCount);
-        //    switch (warningCount)
-        //    {
-        //        case 1 :
-        //            writeMessage(theUserName + " : Pas de lien, premier avertissement !");
-        //            break;
-        //        case 2:
-        //            writeMessage(theUserName + " : Pas de lien, deuxième avertissement !");
-        //            break;
-        //        case 3:
-        //            writeMessage(theUserName + " : Pas de lien, troisième et dernier avertissement !");
-        //            break;
-        //        default:
-        //            writeMessage(theUserName + " ==> Au goulag le capitaliste !");
-        //            banUser(theUserName);
-        //            user.reinitWarnings();
-        //            user.banUser();
-        //            break;
-
-        //    }
-        //}
 
 
         /// <summary>
@@ -202,6 +176,7 @@ namespace MelenchBot
             }
         }
 
+
         /// <summary>
         /// Permet de gérer lorsqu'un utilisateur envoie des insultes (ou grossierté).
         /// Envoie jusqu'à 3 avertissements, au quatrième lien, la personne est banni.
@@ -235,6 +210,40 @@ namespace MelenchBot
                     break;
             }
         }
+
+
+        /* ---------------------------------- Fonctions avant l'ajout de la BDD ---------------------------------- */
+
+        ///// <summary>
+        ///// Permet de gérer lorsqu'un utilisateur envoie un lien sur le tchat.
+        ///// Envoie jusqu'à 3 avertissements, au quatrième lien, la personne est banni.
+        ///// </summary>
+        ///// <param name="theUserName"></param>
+        //public void userSendLink(string theUserName)
+        //{
+        //    User user = lsUsers.getUser(theUserName);
+        //    int warningCount = user.addLinkWarning();
+        //    Console.WriteLine(warningCount);
+        //    switch (warningCount)
+        //    {
+        //        case 1 :
+        //            writeMessage(theUserName + " : Pas de lien, premier avertissement !");
+        //            break;
+        //        case 2:
+        //            writeMessage(theUserName + " : Pas de lien, deuxième avertissement !");
+        //            break;
+        //        case 3:
+        //            writeMessage(theUserName + " : Pas de lien, troisième et dernier avertissement !");
+        //            break;
+        //        default:
+        //            writeMessage(theUserName + " ==> Au goulag le capitaliste !");
+        //            banUser(theUserName);
+        //            user.reinitWarnings();
+        //            user.banUser();
+        //            break;
+
+        //    }
+        //}
 
         ///// <summary>
         ///// Permet de gérer lorsqu'un utilisateur envoie des insultes (ou grossierté).

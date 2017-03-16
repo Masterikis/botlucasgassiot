@@ -8,6 +8,10 @@ using System.Configuration;
 
 namespace MelenchBot
 {
+    /// <summary>
+    /// Permet de gérer les informations de connexions.
+    /// Récupère les données dans le App.config.
+    /// </summary>
     public class ConnectionDatas
     {
         public string serverAddress { get; }

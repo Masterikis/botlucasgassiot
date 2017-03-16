@@ -30,13 +30,21 @@ namespace MelenchBot
 
         public static MessageReceived parseMessage(string theMessage)
         {
-            MessageReceived item = new MessageReceived();
-            item.originalMessage = theMessage;
-            item.itsUserMessage = false;
-            item.itsMelenchBot = false;
-            item.itsMyCreator = false;
-            item.parserMessage(theMessage);
-            return item;
+            try
+            {
+                MessageReceived item = new MessageReceived();
+                item.originalMessage = theMessage;
+                item.itsUserMessage = false;
+                item.itsMelenchBot = false;
+                item.itsMyCreator = false;
+                item.parserMessage(theMessage);
+                return item;
+            } catch(Exception e)
+            {
+                Console.WriteLine("Erreur lors de la lecture du message : " + e.Message);
+                return null;
+            }
+            
         }
 
         /// <summary>
